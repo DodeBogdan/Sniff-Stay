@@ -1,4 +1,5 @@
 using SniffAndStay.API;
+using SniffAndStay.API.Middleware;
 using SniffAndStay.Application;
 using SniffAndStay.Infrastructure;
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 //app.UseAuthentication();

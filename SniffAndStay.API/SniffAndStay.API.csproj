@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Sniff_Stay.API</RootNamespace>
+    <RootNamespace>SniffAndStay.API</RootNamespace>
     <UserSecretsId>0c7e3b78-3ae3-4436-8258-5ef17107867c</UserSecretsId>
   </PropertyGroup>
 
