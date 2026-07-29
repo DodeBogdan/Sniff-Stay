@@ -1,0 +1,6 @@
+@Sniff_Stay.API_HostAddress = http://localhost:5155
+
+GET {{Sniff_Stay.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
