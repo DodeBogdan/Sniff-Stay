@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using SniffAndStay.Application.Common.Behaviors;
 using System.Reflection;
 
 namespace SniffAndStay.Application
@@ -11,7 +12,12 @@ namespace SniffAndStay.Application
             var assembly = Assembly.GetExecutingAssembly();
 
             services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(assembly));
+            {
+                cfg.RegisterServicesFromAssembly(assembly);
+
+                cfg.AddOpenBehavior(
+                    typeof(ValidationBehavior<,>));
+            });
 
             services.AddValidatorsFromAssembly(assembly);
 

@@ -23,7 +23,7 @@ namespace SniffAndStay.API
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    Description = "JWT Authorization header using the Bearer scheme."
+                    Description = "JWT Authorization"
                 });
 
                 options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
