@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="Sniff&amp;Stay.API/SniffAndStay.API.csproj" />
+  <Project Path="SniffAndStay.API/SniffAndStay.API.csproj" />
   <Project Path="SniffAndStay.Application/SniffAndStay.Application.csproj" />
   <Project Path="SniffAndStay.Domain/SniffAndStay.Domain.csproj" />
   <Project Path="SniffAndStay.Infrastructure/SniffAndStay.Infrastructure.csproj" />
