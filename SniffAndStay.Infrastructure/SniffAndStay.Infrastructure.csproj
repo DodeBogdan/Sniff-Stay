@@ -27,4 +27,8 @@
     <ProjectReference Include="..\SniffAndStay.Domain\SniffAndStay.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
+  </ItemGroup>
+
 </Project>

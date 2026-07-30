@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SniffAndStay.Application.Authentication.Response;
+using SniffAndStay.Application.Common.Constants;
+using SniffAndStay.Application.Common.Security;
 using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
@@ -25,13 +28,13 @@ namespace SniffAndStay.Application.Authentication.Commands.Register
 
         public async Task<AuthenticationResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            bool doesUserExist = _applicationDbContext.Users.Any(u => u.Email == request.Email);
+            bool doesUserExist = await _applicationDbContext.Users
+                .AnyAsync(u => string.Equals(u.Email.ToLower(), request.Email.ToLower()), cancellationToken);
             if (doesUserExist)
             {
                 throw new InvalidUserException($"User with email {request.Email} already exists.");
             }
 
-            //TODO: Complete with all data necessary for user creation, like username, etc.
             User newUser = new()
             {
                 Email = request.Email,
@@ -39,10 +42,16 @@ namespace SniffAndStay.Application.Authentication.Commands.Register
             };
 
             await _applicationDbContext.Users.AddAsync(newUser, cancellationToken);
+
+            string activeToken = _jwtService.GenerateToken(TokenClaims.ToTokenClaim(newUser));
+            string refreshToken = _jwtService.GenerateRefreshToken();
+
+            var refreshTokenEntity = Domain.Entities.RefreshToken.CreateResfreshToken(newUser.Id, refreshToken, Constants.RefreshTokenExpirationDays);
+
+            await _applicationDbContext.RefreshTokens.AddAsync(refreshTokenEntity, cancellationToken);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
-            string token = _jwtService.GenerateToken(newUser.Id, newUser.Email);
-            return new AuthenticationResponse(token);
+            return new AuthenticationResponse(newUser.Id, activeToken, refreshToken);
         }
     }
 }

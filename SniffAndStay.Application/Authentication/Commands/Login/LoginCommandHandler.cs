@@ -1,14 +1,12 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SniffAndStay.Application.Authentication.Response;
+using SniffAndStay.Application.Common.Constants;
+using SniffAndStay.Application.Common.Security;
 using SniffAndStay.Application.Exceptions;
-using SniffAndStay.Application.Interfaces;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SniffAndStay.Application.Authentication.Commands.Login
 {
@@ -32,7 +30,7 @@ namespace SniffAndStay.Application.Authentication.Commands.Login
 
         public async Task<AuthenticationResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            User user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email, cancellationToken)
+            User user = await _context.Users.SingleOrDefaultAsync(u => string.Equals(u.Email.ToLower(), request.Email.ToLower()), cancellationToken)
                 ?? throw new InvalidUserException($"User with email: {request.Email} not found.");
 
             if(!_passwordHasherService.Verify(request.Password, user.PasswordHash))
@@ -40,8 +38,15 @@ namespace SniffAndStay.Application.Authentication.Commands.Login
                 throw new InvalidUserException($"Invalid password for user: {request.Email}");
             }
 
-            string token = _jwtService.GenerateToken(user.Id, user.Email);
-            return new AuthenticationResponse(token);
+            string activeToken = _jwtService.GenerateToken(TokenClaims.ToTokenClaim(user));
+            string refreshToken = _jwtService.GenerateRefreshToken();
+
+            var refreshTokenEntity = Domain.Entities.RefreshToken.CreateResfreshToken(user.Id, refreshToken, Constants.RefreshTokenExpirationDays);
+
+            await _context.RefreshTokens.AddAsync(refreshTokenEntity, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return new AuthenticationResponse(user.Id, activeToken, refreshToken);
         }
     }
 }

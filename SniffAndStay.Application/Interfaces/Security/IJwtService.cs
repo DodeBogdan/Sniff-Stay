@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SniffAndStay.Application.Common.Security;
 
 namespace SniffAndStay.Application.Interfaces.Security
 {
     public interface IJwtService
     {
-        string GenerateToken(Guid userId, string email);
+        string GenerateToken(TokenClaims tokenClaims);
+
+        string GenerateRefreshToken();
     }
 }
