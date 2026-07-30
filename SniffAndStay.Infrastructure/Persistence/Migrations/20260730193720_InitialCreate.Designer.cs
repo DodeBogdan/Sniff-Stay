@@ -9,10 +9,10 @@ using SniffAndStay.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SniffAndStay.Infrastructure.Migrations
+namespace SniffAndStay.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260729202118_InitialCreate")]
+    [Migration("20260730193720_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace SniffAndStay.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SniffAndStay.Infrastructure.Enitites.User", b =>
+            modelBuilder.Entity("SniffAndStay.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,13 +42,8 @@ namespace SniffAndStay.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
