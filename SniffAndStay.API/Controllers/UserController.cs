@@ -52,9 +52,9 @@ namespace SniffAndStay.API.Controllers
 
         [HttpDelete("delete-users-profile-picture")]
         [Authorize]
-        public async Task<IActionResult> DeleteUserProfilePicture(CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteUserProfilePicture(Guid? userId, CancellationToken cancellationToken)
         {
-            var response = await _mediator.Send(new DeleteUserProfilePictureCommand(), cancellationToken);
+            var response = await _mediator.Send(new DeleteUserProfilePictureCommand(userId), cancellationToken);
             return Ok(response);
         }
 

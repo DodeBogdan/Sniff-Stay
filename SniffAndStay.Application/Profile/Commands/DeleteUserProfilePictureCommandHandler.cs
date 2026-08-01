@@ -8,7 +8,7 @@ using SniffAndStay.Domain.Entities;
 
 namespace SniffAndStay.Application.Profile.Commands
 {
-    public record DeleteUserProfilePictureCommand() : IRequest<UserProfileResponse>;
+    public record DeleteUserProfilePictureCommand(Guid? userId) : IRequest<UserProfileResponse>;
     public class DeleteUserProfilePictureCommandHandler : IRequestHandler<DeleteUserProfilePictureCommand, UserProfileResponse>
     {
         private readonly IApplicationDbContext _applicationDbContext;
@@ -29,21 +29,24 @@ namespace SniffAndStay.Application.Profile.Commands
         {
             User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken);
 
-            if (user.UserDetails is null)
+            if (request.userId.HasValue && user.Id != request.userId && !string.Equals(_currentUserService.Role, "Admin"))
+            {
+                throw new UnauthorizedAccessException("You are not authorized to delete this user's profile picture.");
+            }
+
+            if (user.UserDetails is null || user.UserDetails.ProfilePicture.IsNullOrEmpty())
             {
                 return UserProfileResponse.FromUserDetails(user);
             }
 
-            if (!user.UserDetails.ProfilePicture.IsNullOrEmpty())
-            {
-                string filePathToDelete = Path.Combine(user.Id.ToString(), user.UserDetails.ProfilePicture!);
-                await _fileStorageService.DeleteFileAsync(filePathToDelete, cancellationToken);
-            }
+            string filePathToDelete = Path.Combine(user.Id.ToString(), user.UserDetails.ProfilePicture!);
+            await _fileStorageService.DeleteFileAsync(filePathToDelete, cancellationToken);
 
             user.UserDetails.ProfilePicture = null;
 
             _applicationDbContext.Users.Update(user);
-            await _applicationDbContext.SaveChangesAsync();
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
             return UserProfileResponse.FromUserDetails(user);
         }
     }
