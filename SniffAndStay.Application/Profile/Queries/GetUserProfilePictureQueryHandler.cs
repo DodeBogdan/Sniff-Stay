@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SniffAndStay.Application.Common.Exceptions;
+using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
@@ -22,7 +22,7 @@ namespace SniffAndStay.Application.Profile.Queries
 
         public async Task<Stream?> Handle(GetUserProfilePictureQuery request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserWithDetails(cancellationToken);
+            User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken);
 
             if (user.UserDetails == null || string.IsNullOrEmpty(user.UserDetails.ProfilePicture))
             {

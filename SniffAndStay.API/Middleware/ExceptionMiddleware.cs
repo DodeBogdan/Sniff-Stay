@@ -30,6 +30,15 @@ namespace SniffAndStay.API.Middleware
             //            message = "Invalid email or password..."
             //        });
             //}
+            catch (NotFoundException ex)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsJsonAsync(
+                    new
+                    {
+                        message = ex.Message
+                    });
+            }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;

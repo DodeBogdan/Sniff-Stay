@@ -18,7 +18,7 @@ namespace SniffAndStay.Application.Profile.Queries
 
         public async Task<UserProfileResponse> Handle(GetUserProfileDetailsQuery request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserWithDetails(cancellationToken);
+            User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken);
 
             return UserProfileResponse.FromUserDetails(user);
         }

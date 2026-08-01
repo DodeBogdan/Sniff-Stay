@@ -9,6 +9,6 @@ namespace SniffAndStay.Application.Interfaces.Security
         string? Role { get; }
         bool IsAuthenticated { get; }
 
-        Task<User> GetUserWithDetails(CancellationToken cancellationToken);
+        Task<User> GetUserWithDetailsAsync(CancellationToken cancellationToken);
     }
 }

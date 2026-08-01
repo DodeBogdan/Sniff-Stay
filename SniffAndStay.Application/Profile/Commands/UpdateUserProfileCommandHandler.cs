@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SniffAndStay.Application.Common.Exceptions;
 using SniffAndStay.Application.Common.Extensions;
+using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
@@ -29,7 +29,7 @@ namespace SniffAndStay.Application.Profile.Commands
 
         public async Task<UserProfileResponse> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserWithDetails(cancellationToken)
+            User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken)
                 ?? throw new NotFoundException("User not found.");
 
             user.UserDetails ??= new UserDetails();
