@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
+using SniffAndStay.Infrastructure.Common;
 using SniffAndStay.Infrastructure.Configuration;
 using SniffAndStay.Infrastructure.Persistence;
 using SniffAndStay.Infrastructure.Security;
@@ -29,9 +31,11 @@ namespace SniffAndStay.Infrastructure
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-            services.Configure<JwtConfig>(configuration.GetSection(JwtConfig.SectionName));
+            services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 
             // Authentication
+            services.Configure<JwtConfig>(configuration.GetSection(JwtConfig.SectionName));
+
             var jwtConfig = configuration.GetSection(JwtConfig.SectionName).Get<JwtConfig>()!;
 
             services.AddAuthentication(options =>

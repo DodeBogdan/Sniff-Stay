@@ -1,4 +1,6 @@
-﻿namespace SniffAndStay.Application.Interfaces.Security
+﻿using SniffAndStay.Domain.Entities;
+
+namespace SniffAndStay.Application.Interfaces.Security
 {
     public interface ICurrentUserService
     {
@@ -6,5 +8,7 @@
         string? Email { get; }
         string? Role { get; }
         bool IsAuthenticated { get; }
+
+        Task<User> GetUserWithDetails(CancellationToken cancellationToken);
     }
 }

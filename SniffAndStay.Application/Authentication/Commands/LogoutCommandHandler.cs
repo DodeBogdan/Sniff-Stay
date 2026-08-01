@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SniffAndStay.Application.Interfaces.Persistence;
 
-namespace SniffAndStay.Application.Authentication.Commands.Logout
+namespace SniffAndStay.Application.Authentication.Commands
 {
     public record LogoutCommand(Guid UserId, string RefreshToken) : IRequest;
     public class LogoutCommandHandler : IRequestHandler<LogoutCommand>

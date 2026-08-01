@@ -8,7 +8,7 @@ using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Authentication.Commands.Register
+namespace SniffAndStay.Application.Authentication.Commands
 {
     public record RegisterCommand(string Email, string Password) : IRequest<AuthenticationResponse>;
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthenticationResponse>

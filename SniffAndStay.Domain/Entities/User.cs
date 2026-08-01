@@ -11,5 +11,8 @@
         public UserRole Role { get; set; } = UserRole.User;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public UserDetails? UserDetails { get; set; }
+        public ICollection<Pet>? Pets { get; set; }
     }
 }
