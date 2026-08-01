@@ -44,7 +44,7 @@ namespace SniffAndStay.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<AuthenticationResponse> RefreshToken(TokenRequest request, CancellationToken cancellationToken)
         {
             return await _mediator.Send(new RefreshTokenCommand(request.UserId, request.RefreshToken), cancellationToken);

@@ -27,6 +27,7 @@ namespace SniffAndStay.Infrastructure
             services.AddScoped<IPasswordHasher<object>, PasswordHasher<object>>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.Configure<JwtConfig>(configuration.GetSection(JwtConfig.SectionName));
 
@@ -40,6 +41,7 @@ namespace SniffAndStay.Infrastructure
             })
                 .AddJwtBearer(options =>
                 {
+                    options.MapInboundClaims = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -56,6 +58,7 @@ namespace SniffAndStay.Infrastructure
 
             // Authorization
             services.AddAuthorization();
+            services.AddHttpContextAccessor();
 
             return services;
         }
