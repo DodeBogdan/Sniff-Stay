@@ -1,14 +1,21 @@
-﻿using Microsoft.Extensions.Options;
-using SniffAndStay.Application.Common.Extensions;
+﻿using SniffAndStay.Application.Common.Extensions;
 using SniffAndStay.Application.Interfaces.Common;
-using SniffAndStay.Infrastructure.Configuration;
 
 namespace SniffAndStay.Infrastructure.Common
 {
     public class LocalFileStorageService : IFileStorageService
     {
-        public Task<Stream?> GetFileAsync(string fullPath, CancellationToken cancellationToken)
+        private readonly IFileStorageConfig _fileStorageConfig;
+
+        public LocalFileStorageService(IFileStorageConfig fileStorageConfig)
         {
+            _fileStorageConfig = fileStorageConfig;
+        }
+
+        public Task<Stream?> GetFileAsync(string fileName, CancellationToken cancellationToken)
+        {
+            string fullPath = Path.Combine(_fileStorageConfig.GetProfilePicturePath(), fileName);
+
             if (fullPath.IsNullOrEmpty())
             {
                 throw new ArgumentException("File path cannot be null or empty.", nameof(fullPath));
@@ -18,8 +25,10 @@ namespace SniffAndStay.Infrastructure.Common
             return Task.FromResult<Stream?>(fileStream);
         }
 
-        public Task DeleteFileAsync(string fullPath, CancellationToken cancellationToken)
+        public Task DeleteFileAsync(string fileName, CancellationToken cancellationToken)
         {
+            string fullPath = Path.Combine(_fileStorageConfig.GetProfilePicturePath(), fileName);
+
             if (fullPath.IsNullOrEmpty())
             {
                 throw new ArgumentException("File path cannot be null or empty.", nameof(fullPath));
@@ -33,8 +42,10 @@ namespace SniffAndStay.Infrastructure.Common
             return Task.CompletedTask;
         }
 
-        public async Task SaveFileAsync(string filePath, string fileName, Stream fileContent, CancellationToken cancellationToken)
+        public async Task SaveFileAsync(string fileName, Stream fileContent, CancellationToken cancellationToken)
         {
+            string filePath = _fileStorageConfig.GetProfilePicturePath();
+
             if (filePath.IsNullOrEmpty())
             {
                 throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));

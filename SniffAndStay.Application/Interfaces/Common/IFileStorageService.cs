@@ -2,8 +2,8 @@
 {
     public interface IFileStorageService
     {
-        Task<Stream?> GetFileAsync(string fullPath, CancellationToken cancellationToken);
-        Task DeleteFileAsync(string fullPath, CancellationToken cancellationToken);
-        Task SaveFileAsync(string filePath, string fileName, Stream fileContent, CancellationToken cancellationToken);
+        Task<Stream?> GetFileAsync(string fileName, CancellationToken cancellationToken);
+        Task DeleteFileAsync(string fileName, CancellationToken cancellationToken);
+        Task SaveFileAsync(string fileName, Stream fileContent, CancellationToken cancellationToken);
     }
 }

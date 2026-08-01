@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Options;
 using SniffAndStay.Application.Common.Exceptions;
-using SniffAndStay.Application.Configuration;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
@@ -12,16 +10,13 @@ namespace SniffAndStay.Application.Profile.Queries
     public class GetUserProfilePictureQueryHandler : IRequestHandler<GetUserProfilePictureQuery, Stream?>
     {
         private readonly IFileStorageService _fileStorageService;
-        private readonly FileStorageConfig _fileStorageConfig;
         private readonly ICurrentUserService _currentUserService;
 
         public GetUserProfilePictureQueryHandler(
             IFileStorageService fileStorageService,
-            IOptions<FileStorageConfig> fileStorageConfig,
             ICurrentUserService currentUserService)
         {
             _fileStorageService = fileStorageService;
-            _fileStorageConfig = fileStorageConfig.Value;
             _currentUserService = currentUserService;
         }
 
@@ -34,9 +29,7 @@ namespace SniffAndStay.Application.Profile.Queries
                 throw new NotFoundException("User profile picture not found.");
             }
 
-            string profilePicturePath = string.Format(_fileStorageConfig.ProfilePicturePath, user.Id);
-            string fullPath = Path.Combine(profilePicturePath, user.UserDetails.ProfilePicture);
-            return await _fileStorageService.GetFileAsync(fullPath, cancellationToken);
+            return await _fileStorageService.GetFileAsync(Path.Combine(user.Id.ToString(), user.UserDetails.ProfilePicture), cancellationToken);
         }
     }
 }
