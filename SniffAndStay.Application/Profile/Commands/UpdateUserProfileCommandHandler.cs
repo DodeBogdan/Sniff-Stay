@@ -61,11 +61,12 @@ namespace SniffAndStay.Application.Profile.Commands
 
             if (request.File != null && !request.FileName.IsNullOrEmpty() && !string.Equals(user.UserDetails.ProfilePicture, request.FileName))
             {
-                await _fileStorageService.SaveFileAsync(_fileStorageConfig.ProfilePicturePath, request.FileName!, request.File, cancellationToken);
+                string profilePicturePath = string.Format(_fileStorageConfig.ProfilePicturePath, user.Id);
+                await _fileStorageService.SaveFileAsync(profilePicturePath, request.FileName!, request.File, cancellationToken);
                 
                 if (!user.UserDetails.ProfilePicture.IsNullOrEmpty())
                 {
-                    await _fileStorageService.DeleteFileAsync(Path.Combine(_fileStorageConfig.ProfilePicturePath, user.UserDetails.ProfilePicture!), cancellationToken);
+                    await _fileStorageService.DeleteFileAsync(Path.Combine(profilePicturePath, user.UserDetails.ProfilePicture!), cancellationToken);
                 }
 
                 user.UserDetails.ProfilePicture = request.FileName!;

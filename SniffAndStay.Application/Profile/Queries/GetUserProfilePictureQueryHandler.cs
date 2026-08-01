@@ -34,7 +34,8 @@ namespace SniffAndStay.Application.Profile.Queries
                 throw new NotFoundException("User profile picture not found.");
             }
 
-            string fullPath = Path.Combine(_fileStorageConfig.ProfilePicturePath, user.UserDetails.ProfilePicture);
+            string profilePicturePath = string.Format(_fileStorageConfig.ProfilePicturePath, user.Id);
+            string fullPath = Path.Combine(profilePicturePath, user.UserDetails.ProfilePicture);
             return await _fileStorageService.GetFileAsync(fullPath, cancellationToken);
         }
     }
