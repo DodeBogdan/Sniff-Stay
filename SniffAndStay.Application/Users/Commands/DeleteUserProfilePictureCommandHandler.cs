@@ -15,21 +15,25 @@ namespace SniffAndStay.Application.Users.Commands
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
         private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
+
         public DeleteUserProfilePictureCommandHandler(
             IApplicationDbContext applicationDbContext,
             ICurrentUserService currentUserService,
             IFileStorageService fileStorageService,
-            IFilePathService filePathService)
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _applicationDbContext = applicationDbContext;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
             _filePathService = filePathService;
+            _userService = userService;
         }
 
         public async Task<UserProfileResponse> Handle(DeleteUserProfilePictureCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserAsync(IncludeType.Details, cancellationToken);
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.Details, cancellationToken);
 
             if (request.userId.HasValue && user.Id != request.userId && !string.Equals(_currentUserService.Role, "Admin"))
             {

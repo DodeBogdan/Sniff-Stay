@@ -17,22 +17,25 @@ namespace SniffAndStay.Application.Pets.Commands
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
         private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
 
         public AddPetCommandHandler(
             IApplicationDbContext applicationDbContext,
             ICurrentUserService currentUserService,
             IFileStorageService fileStorageService,
-            IFilePathService filePathService)
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _applicationDbContext = applicationDbContext;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
             _filePathService = filePathService;
+            _userService = userService;
         }
 
         public async Task<PetResponse> Handle(AddPetCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserAsync(IncludeType.None, cancellationToken);
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.None, cancellationToken);
 
             Pet pet = new()
             {

@@ -31,6 +31,7 @@ namespace SniffAndStay.Infrastructure
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddSingleton<IFilePathService, FilePathService>();
             services.Configure<FileStorageConfig>(configuration.GetSection(FileStorageConfig.SectionName));

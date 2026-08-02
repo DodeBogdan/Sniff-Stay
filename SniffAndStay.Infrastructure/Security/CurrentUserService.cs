@@ -45,7 +45,7 @@ namespace SniffAndStay.Infrastructure.Security
 
         public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
-        public async Task<User> GetUserAsync(IncludeType includeType = IncludeType.None, CancellationToken cancellationToken = default)
+        public async Task<User> GetUserAsync(IncludeType includeType, CancellationToken cancellationToken = default)
         {
             Guid userId = UserId
                 ?? throw new InvalidUserException("Invalid user");

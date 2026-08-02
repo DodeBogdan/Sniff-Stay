@@ -17,22 +17,25 @@ namespace SniffAndStay.Application.Users.Commands
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
         private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
 
         public AddOrUpdateUserProfileCommandHandler(
             IApplicationDbContext applicationDbContext,
             ICurrentUserService currentUserService,
             IFileStorageService fileStorageService,
-            IFilePathService filePathService)
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _applicationDbContext = applicationDbContext;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
             _filePathService = filePathService;
+            _userService = userService;
         }
 
         public async Task<UserProfileResponse> Handle(AddOrUpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserAsync(IncludeType.Details, cancellationToken)
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.Details, cancellationToken)
                 ?? throw new NotFoundException("User not found.");
 
             user.UserDetails ??= new UserDetails();

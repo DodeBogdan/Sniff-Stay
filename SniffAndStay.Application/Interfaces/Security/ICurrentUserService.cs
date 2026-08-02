@@ -16,7 +16,5 @@ namespace SniffAndStay.Application.Interfaces.Security
         string? Email { get; }
         string? Role { get; }
         bool IsAuthenticated { get; }
-
-        Task<User> GetUserAsync(IncludeType includeType = IncludeType.None, CancellationToken cancellationToken = default);
     }
 }

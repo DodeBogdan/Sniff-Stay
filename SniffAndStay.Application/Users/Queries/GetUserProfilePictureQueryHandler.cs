@@ -12,19 +12,22 @@ namespace SniffAndStay.Application.Users.Queries
         private readonly IFileStorageService _fileStorageService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
         public GetUserProfilePictureQueryHandler(
             IFileStorageService fileStorageService,
             ICurrentUserService currentUserService,
-            IFilePathService filePathService)
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _fileStorageService = fileStorageService;
             _currentUserService = currentUserService;
             _filePathService = filePathService;
+            _userService = userService;
         }
 
         public async Task<Stream?> Handle(GetUserProfilePictureQuery request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserAsync(IncludeType.Details, cancellationToken);
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.Details, cancellationToken);
 
             if (user.UserDetails == null || string.IsNullOrEmpty(user.UserDetails.ProfilePicture))
             {
