@@ -7,7 +7,7 @@ using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Authentication.Commands.RefreshToken
+namespace SniffAndStay.Application.Authentication.Commands
 {
     public record RefreshTokenCommand(Guid UserId, string RefreshToken) : IRequest<AuthenticationResponse>;
     public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, AuthenticationResponse>
@@ -22,7 +22,7 @@ namespace SniffAndStay.Application.Authentication.Commands.RefreshToken
 
         public async Task<AuthenticationResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            Domain.Entities.RefreshToken refreshToken = await _applicationDbContext.RefreshTokens
+            RefreshToken refreshToken = await _applicationDbContext.RefreshTokens
                 .SingleOrDefaultAsync(rt => string.Equals(rt.Token, request.RefreshToken), cancellationToken)
                 ?? throw new UnauthorizedAccessException("Invalid refresh token.");
 

@@ -1,20 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using SniffAndStay.Application.Exceptions;
+using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
-using System;
-using System.Collections.Generic;
+using SniffAndStay.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace SniffAndStay.Infrastructure.Security
 {
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IApplicationDbContext _applicationDbContext;
 
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+        public CurrentUserService(
+            IHttpContextAccessor httpContextAccessor,
+            IApplicationDbContext applicationDbContext)
         {
             _httpContextAccessor = httpContextAccessor;
+            _applicationDbContext = applicationDbContext;
         }
 
         public Guid? UserId
@@ -37,5 +42,19 @@ namespace SniffAndStay.Infrastructure.Security
                 .FindFirst(ClaimTypes.Role)?.Value;
 
         public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+
+        public async Task<User> GetUserWithDetailsAsync(CancellationToken cancellationToken)
+        {
+            Guid userId = UserId
+                ?? throw new InvalidUserException("Invalid user");
+
+            User user = await _applicationDbContext.Users
+                .AsNoTracking()
+                .Include(user => user.UserDetails)
+                .FirstOrDefaultAsync(user => Guid.Equals(user.Id, userId), cancellationToken)
+                ?? throw new InvalidUserException("Invalid user");
+
+            return user;
+        }
     }
 }

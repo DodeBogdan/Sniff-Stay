@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
-namespace SniffAndStay.Application.Authentication.Commands.Register
+using SniffAndStay.Application.Authentication.Commands;
+
+namespace SniffAndStay.Application.Authentication.Validators
 {
     public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {

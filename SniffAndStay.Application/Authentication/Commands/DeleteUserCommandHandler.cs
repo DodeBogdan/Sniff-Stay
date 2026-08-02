@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Authentication.Commands.DeleteUser
+namespace SniffAndStay.Application.Authentication.Commands
 {
     public record DeleteUserCommand(string? Email) : IRequest;
 
@@ -19,7 +19,7 @@ namespace SniffAndStay.Application.Authentication.Commands.DeleteUser
 
         public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            User user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
+            User? user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
             if (user == null)
             {
