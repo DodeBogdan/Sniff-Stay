@@ -1,6 +1,6 @@
 ﻿namespace SniffAndStay.Application.Common.Configurations
 {
-    internal class FileStorageConfig
+    public class FileStorageConfig
     {
         public const string SectionName = "FileStorage";
 

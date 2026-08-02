@@ -8,6 +8,8 @@ namespace SniffAndStay.Application.Interfaces.Persistence
         DbSet<User> Users { get; }
         DbSet<RefreshToken> RefreshTokens { get; }
 
+        public DbSet<Pet> Pets { get; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

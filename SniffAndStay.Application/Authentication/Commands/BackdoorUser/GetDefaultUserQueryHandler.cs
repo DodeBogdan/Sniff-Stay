@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using SniffAndStay.Application.Authentication.Response;
 
-namespace SniffAndStay.Application.Authentication.Commands.TODELETE
+namespace SniffAndStay.Application.Authentication.Commands.BackdoorUser
 {
     public record GetDefaultUserQuery() : IRequest<AuthenticationResponse>;
 

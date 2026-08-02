@@ -2,6 +2,14 @@
 
 namespace SniffAndStay.Application.Interfaces.Security
 {
+    public enum IncludeType
+    {
+        None,
+        Details,
+        Pets,
+        All
+    }
+
     public interface ICurrentUserService
     {
         Guid? UserId { get; }
@@ -9,6 +17,6 @@ namespace SniffAndStay.Application.Interfaces.Security
         string? Role { get; }
         bool IsAuthenticated { get; }
 
-        Task<User> GetUserWithDetailsAsync(CancellationToken cancellationToken);
+        Task<User> GetUserAsync(IncludeType includeType = IncludeType.None, CancellationToken cancellationToken = default);
     }
 }

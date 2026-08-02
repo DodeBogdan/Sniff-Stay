@@ -1,6 +1,6 @@
 ﻿using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Profile.Response
+namespace SniffAndStay.Application.Users.Response
 {
     public class UserProfileResponse
     {

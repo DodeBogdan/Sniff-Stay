@@ -32,7 +32,7 @@ namespace SniffAndStay.Infrastructure
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-            services.AddSingleton<IFileStorageConfig, FileStorageConfigAdapter>();
+            services.AddSingleton<IFilePathService, FilePathService>();
             services.Configure<FileStorageConfig>(configuration.GetSection(FileStorageConfig.SectionName));
             var fileStorageConfig = configuration.GetSection(FileStorageConfig.SectionName).Get<FileStorageConfig>()!;
             

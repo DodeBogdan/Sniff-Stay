@@ -21,11 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Profile\Queries\GetUserProfileDetailsQueryHandler.cs" />
+    <None Include="Users\Queries\GetUserProfileDetailsQueryHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Profile\Validators\" />
+    <Folder Include="Users\Validators\" />
   </ItemGroup>
 
 </Project>

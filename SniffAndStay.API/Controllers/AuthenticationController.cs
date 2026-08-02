@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SniffAndStay.Application.Authentication.Commands;
-using SniffAndStay.Application.Authentication.Commands.TODELETE;
+using SniffAndStay.Application.Authentication.Commands.BackdoorUser;
 using SniffAndStay.Application.Authentication.DTOs;
 using SniffAndStay.Application.Authentication.Response;
 
@@ -19,18 +19,16 @@ namespace SniffAndStay.API.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>
-        /// This will be deleted in production, it is only for testing purposes to get a default user and token.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+#if DEBUG
+
         [HttpGet("get-default-user")]
         [AllowAnonymous]
         public async Task<AuthenticationResponse> GetDefaultUser(CancellationToken cancellationToken)
         {
             return await _mediator.Send(new GetDefaultUserQuery(), cancellationToken);
         }
+
+#endif
 
         [HttpPost("login")]
         [AllowAnonymous]

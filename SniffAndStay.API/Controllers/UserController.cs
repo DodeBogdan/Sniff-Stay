@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SniffAndStay.Application.Authentication.Commands;
-using SniffAndStay.Application.Profile.Commands;
-using SniffAndStay.Application.Profile.DTOs;
-using SniffAndStay.Application.Profile.Queries;
+using SniffAndStay.Application.Users.Commands;
+using SniffAndStay.Application.Users.DTOs;
+using SniffAndStay.Application.Users.Queries;
 
 namespace SniffAndStay.API.Controllers
 {
@@ -36,17 +36,17 @@ namespace SniffAndStay.API.Controllers
             if (stream is null)
                 return NotFound();
 
-            return File(stream, "image/jpeg");   // aici, Stream-ul chiar ajunge la client, ca octeți binari, nu JSON
+            return File(stream, "image/jpeg");
         }
 
-        [HttpPost("update-user-profile")]
+        [HttpPost("add-or-update-user-profile")]
         [Authorize]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateUserProfile(IFormFile? file, [FromQuery]UserProfileRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddOrUpdateUserProfile(IFormFile? file, [FromQuery] UserProfileRequest request, CancellationToken cancellationToken)
         {
             Stream? fileStream = file?.OpenReadStream();
 
-            var response = await _mediator.Send(new UpdateUserProfileCommand(request, fileStream, file?.FileName), cancellationToken);
+            var response = await _mediator.Send(new AddOrUpdateUserProfileCommand(request, fileStream, file?.FileName), cancellationToken);
             return Ok(response);
         }
 
@@ -58,11 +58,15 @@ namespace SniffAndStay.API.Controllers
             return Ok(response);
         }
 
+#if DEBUG
+
         [HttpDelete("delete-users")]
         [Authorize(Roles = "Admin")]
-        public async Task DeleteUser(string? email, CancellationToken cancellationToken)
+        public async Task DeleteUser(string? email, bool? shouldRemoveAllUsers, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteUserCommand(email), cancellationToken);
+            await _mediator.Send(new DeleteUserCommand(email, shouldRemoveAllUsers ?? false), cancellationToken);
         }
+
+#endif
     }
 }

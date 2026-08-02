@@ -4,11 +4,13 @@ using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Domain.Entities;
+using SniffAndStay.Infrastructure.Persistence.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace SniffAndStay.Infrastructure.Security
 {
+
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -43,14 +45,14 @@ namespace SniffAndStay.Infrastructure.Security
 
         public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
-        public async Task<User> GetUserWithDetailsAsync(CancellationToken cancellationToken)
+        public async Task<User> GetUserAsync(IncludeType includeType = IncludeType.None, CancellationToken cancellationToken = default)
         {
             Guid userId = UserId
                 ?? throw new InvalidUserException("Invalid user");
 
             User user = await _applicationDbContext.Users
                 .AsNoTracking()
-                .Include(user => user.UserDetails)
+                .AddInclude(includeType)
                 .FirstOrDefaultAsync(user => Guid.Equals(user.Id, userId), cancellationToken)
                 ?? throw new InvalidUserException("Invalid user");
 
