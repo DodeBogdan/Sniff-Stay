@@ -1,32 +1,34 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Persistence;
+using SniffAndStay.Application.Interfaces.Security;
 using SniffAndStay.Application.Pets.Response;
 
 namespace SniffAndStay.Application.Pets.Queries
 {
-    public record GetUserPetsDetailsQuery(Guid UserId) : IRequest<IEnumerable<PetResponse>>;
+    public record GetUserPetsDetailsQuery() : IRequest<IEnumerable<PetResponse>>;
 
     public class GetUserPetsDetailsQueryHandler : IRequestHandler<GetUserPetsDetailsQuery, IEnumerable<PetResponse>>
     {
         private readonly IApplicationDbContext _applicationDbContext;
+        private readonly ICurrentUserService _currentUserService;
 
-        public GetUserPetsDetailsQueryHandler(IApplicationDbContext applicationDbContext)
+        public GetUserPetsDetailsQueryHandler(
+            IApplicationDbContext applicationDbContext,
+            ICurrentUserService currentUserService)
         {
             _applicationDbContext = applicationDbContext;
+            _currentUserService = currentUserService;
         }
 
         public async Task<IEnumerable<PetResponse>> Handle(GetUserPetsDetailsQuery request, CancellationToken cancellationToken)
         {
-            if (!await _applicationDbContext.Users.AnyAsync(user => Equals(user.Id, request.UserId), cancellationToken))
-            {
-                throw new InvalidOperationException("User not found");
-            }
-
-            //TODO: Add checks for user preferences and privacy settings here if needed
+            Guid userId = _currentUserService.UserId
+                ?? throw new InvalidUserException("Invalid user.");
 
             List<PetResponse> pets = await _applicationDbContext.Pets
-                .Where(p => p.UserId == request.UserId)
+                .Where(p => p.UserId == userId)
                 .Select(p => PetResponse.FromPet(p))
                 .ToListAsync(cancellationToken);
 

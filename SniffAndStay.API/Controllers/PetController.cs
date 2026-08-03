@@ -19,19 +19,30 @@ namespace SniffAndStay.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("get-user-pets-details/{userId}")]
+        /// <summary>
+        /// Get the details of current the user's pets.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("get-user-pets-details")]
         [Authorize]
-        public async Task<IActionResult> GetUserPetsDetails(Guid userId, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetUserPetsDetails(CancellationToken cancellationToken = default)
         {
-            var response = await _mediator.Send(new GetUserPetsDetailsQuery(userId), cancellationToken);
+            var response = await _mediator.Send(new GetUserPetsDetailsQuery(), cancellationToken);
             return Ok(response);
         }
 
-        [HttpGet("get-user-pet-picture/{userId}/{petId}")]
+        /// <summary>
+        /// Get the picture of a specific pet by its ID from current user.
+        /// </summary>
+        /// <param name="petId">The ID of the pet whose picture to retrieve</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("get-user-pet-picture")]
         [Authorize]
-        public async Task<IActionResult> GetUserPetPicture(Guid userId, Guid petId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserPetPicture(Guid petId, CancellationToken cancellationToken)
         {
-            var stream = await _mediator.Send(new GetUserPetPictureQuery(userId, petId), cancellationToken);
+            var stream = await _mediator.Send(new GetUserPetPictureQuery(petId), cancellationToken);
 
             if (stream is null)
                 return NotFound();
@@ -39,6 +50,13 @@ namespace SniffAndStay.API.Controllers
             return File(stream, "image/jpeg");
         }
 
+        /// <summary>
+        /// Add a new pet for the current user with an optional profile picture.
+        /// </summary>
+        /// <param name="file">The profile picture file for the pet</param>
+        /// <param name="request">The request containing pet details</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns></returns>
         [HttpPost("add-pet")]
         [Authorize]
         [Consumes("multipart/form-data")]

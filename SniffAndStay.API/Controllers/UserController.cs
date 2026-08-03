@@ -19,6 +19,11 @@ namespace SniffAndStay.API.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get the details of the currently authenticated user.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("get-user-profile-details")]
         [Authorize]
         public async Task<IActionResult> GetUserProfileDetails(CancellationToken cancellationToken = default)
@@ -27,6 +32,11 @@ namespace SniffAndStay.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Get the profile picture of the currently authenticated user.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("get-user-profile-picture")]
         [Authorize]
         public async Task<IActionResult> GetUserProfilePicture(CancellationToken cancellationToken)
@@ -39,6 +49,13 @@ namespace SniffAndStay.API.Controllers
             return File(stream, "image/jpeg");
         }
 
+        /// <summary>
+        /// Add or update the profile details of the currently authenticated user, including an optional profile picture.
+        /// </summary>
+        /// <param name="file">Picture file</param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("add-or-update-user-profile")]
         [Authorize]
         [Consumes("multipart/form-data")]
@@ -50,6 +67,12 @@ namespace SniffAndStay.API.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Delete the profile picture of the currently authenticated user.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose profile picture to delete</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpDelete("delete-users-profile-picture")]
         [Authorize]
         public async Task<IActionResult> DeleteUserProfilePicture(Guid? userId, CancellationToken cancellationToken)
@@ -60,6 +83,14 @@ namespace SniffAndStay.API.Controllers
 
 #if DEBUG
 
+        /// <summary>
+        /// Delete a user by email or delete all users if shouldRemoveAllUsers is true.
+        /// This endpoint is only available in DEBUG mode and requires Admin role authorization.
+        /// </summary>
+        /// <param name="email">The email of the user to delete</param>
+        /// <param name="shouldRemoveAllUsers">Whether to delete all users</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpDelete("delete-users")]
         [Authorize(Roles = "Admin")]
         public async Task DeleteUser(string? email, bool? shouldRemoveAllUsers, CancellationToken cancellationToken)

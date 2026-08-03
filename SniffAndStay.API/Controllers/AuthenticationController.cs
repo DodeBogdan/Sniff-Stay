@@ -21,6 +21,11 @@ namespace SniffAndStay.API.Controllers
 
 #if DEBUG
 
+        /// <summary>
+        /// This endpoint is only available in DEBUG mode and is used to retrieve a default user for testing purposes.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("get-default-user")]
         [AllowAnonymous]
         public async Task<AuthenticationResponse> GetDefaultUser(CancellationToken cancellationToken)
@@ -30,6 +35,12 @@ namespace SniffAndStay.API.Controllers
 
 #endif
 
+        /// <summary>
+        /// This endpoint is used to authenticate a user and retrieve an authentication response containing the active token and refresh token.
+        /// </summary>
+        /// <param name="request">The login request containing the user's email and password.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<AuthenticationResponse> Login(LoginRequest request, CancellationToken cancellationToken)
@@ -37,6 +48,12 @@ namespace SniffAndStay.API.Controllers
             return await _mediator.Send(new LoginCommand(request.Email, request.Password), cancellationToken);
         }
 
+        /// <summary>
+        /// This endpoint is used to register a new user.
+        /// </summary>
+        /// <param name="request">The registration request containing the user's email and password.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<AuthenticationResponse> Register(RegisterRequest request, CancellationToken cancellationToken)
@@ -44,6 +61,12 @@ namespace SniffAndStay.API.Controllers
             return await _mediator.Send(new RegisterCommand(request.Email, request.Password), cancellationToken);
         }
 
+        /// <summary>
+        /// This endpoint is used to logout a user.
+        /// </summary>
+        /// <param name="request">The token request containing the user's ID and refresh token.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("logout")]
         [Authorize]
         public async Task Logout(TokenRequest request, CancellationToken cancellationToken)
@@ -51,6 +74,12 @@ namespace SniffAndStay.API.Controllers
             await _mediator.Send(new LogoutCommand(request.UserId, request.RefreshToken), cancellationToken);
         }
 
+        /// <summary>
+        /// This endpoint is used to refresh an authentication token.
+        /// </summary>
+        /// <param name="request">The token request containing the user's ID and refresh token.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         public async Task<AuthenticationResponse> RefreshToken(TokenRequest request, CancellationToken cancellationToken)

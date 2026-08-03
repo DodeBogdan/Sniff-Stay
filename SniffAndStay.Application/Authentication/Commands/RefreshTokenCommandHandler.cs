@@ -37,7 +37,7 @@ namespace SniffAndStay.Application.Authentication.Commands
             }
 
             string newRefreshToken = _jwtService.GenerateRefreshToken();
-            var refreshTokenEntity = Domain.Entities.RefreshToken.CreateResfreshToken(refreshToken.UserId, newRefreshToken, Constants.RefreshTokenExpirationDays);
+            var refreshTokenEntity = RefreshToken.CreateResfreshToken(refreshToken.UserId, newRefreshToken, Constants.RefreshTokenExpirationDays);
 
             refreshToken.RevokedAt = DateTime.UtcNow;
 
