@@ -64,7 +64,7 @@ namespace SniffAndStay.API.Controllers
         {
             Stream? fileStream = file?.OpenReadStream();
 
-            var response = await _mediator.Send(new AddPetCommand(request, fileStream, file?.FileName), cancellationToken);
+            var response = await _mediator.Send(new AddPetCommand(request, fileStream, file?.FileName, file?.ContentType), cancellationToken);
             return Ok(response);
         }
 

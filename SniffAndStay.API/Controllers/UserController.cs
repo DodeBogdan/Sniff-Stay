@@ -53,7 +53,7 @@ namespace SniffAndStay.API.Controllers
         /// Add or update the profile details of the currently authenticated user, including an optional profile picture.
         /// </summary>
         /// <param name="file">Picture file</param>
-        /// <param name="request"></param>
+        /// <param name="request">The request containing the user profile details to update.</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("add-or-update-user-profile")]
@@ -63,7 +63,7 @@ namespace SniffAndStay.API.Controllers
         {
             Stream? fileStream = file?.OpenReadStream();
 
-            var response = await _mediator.Send(new AddOrUpdateUserProfileCommand(request, fileStream, file?.FileName), cancellationToken);
+            var response = await _mediator.Send(new AddOrUpdateUserProfileCommand(request, fileStream, file?.FileName, file?.ContentType), cancellationToken);
             return Ok(response);
         }
 

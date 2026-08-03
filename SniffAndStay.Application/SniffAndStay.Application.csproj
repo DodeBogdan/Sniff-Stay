@@ -26,8 +26,4 @@
     <None Include="Users\Queries\GetUserProfileDetailsQueryHandler.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Users\Validators\" />
-  </ItemGroup>
-
 </Project>

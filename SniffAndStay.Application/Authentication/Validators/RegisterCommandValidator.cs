@@ -9,27 +9,25 @@ namespace SniffAndStay.Application.Authentication.Validators
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
+                .WithMessage("Email is required.")
                 .EmailAddress()
-                .MaximumLength(255);
+                .WithMessage("Invalid email format.")
+                .MaximumLength(255)
+                .WithMessage("Email must not exceed 255 characters.");
 
             RuleFor(x => x.Password)
                 .NotEmpty()
+                .WithMessage("Password is required.")
                 .MinimumLength(8)
-                .MaximumLength(100);
-
-            RuleFor(x => x.Password)
+                .WithMessage("Password must be at least 8 characters long.")
+                .MaximumLength(100)
+                .WithMessage("Password must not exceed 100 characters.")
                 .Matches("[A-Z]")
-                .WithMessage("Password must contain at least one uppercase letter.");
-
-            RuleFor(x => x.Password)
+                .WithMessage("Password must contain at least one uppercase letter.")
                 .Matches("[a-z]")
-                .WithMessage("Password must contain at least one lowercase letter.");
-
-            RuleFor(x => x.Password)
+                .WithMessage("Password must contain at least one lowercase letter.")
                 .Matches(@"\d")
-                .WithMessage("Password must contain at least one digit.");
-
-            RuleFor(x => x.Password)
+                .WithMessage("Password must contain at least one digit.")
                 .Matches(@"[!@#$%^&*()_\-+=\[{\]};:'"",.<>/?\\|`~]")
                 .WithMessage("Password must contain at least one special character.");
         }

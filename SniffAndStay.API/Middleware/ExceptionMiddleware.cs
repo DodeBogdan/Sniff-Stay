@@ -1,4 +1,7 @@
-﻿using SniffAndStay.Application.Exceptions;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SniffAndStay.Application.Exceptions;
 
 namespace SniffAndStay.API.Middleware
 {
@@ -18,18 +21,19 @@ namespace SniffAndStay.API.Middleware
             {
                 await _next(context);
             }
-            //TODO: Find a way to catch the InvalidUserException and return a 404 status code with a
-            //better message than "Invalid email or password..." and logg the exception in the database.
-            //catch (InvalidUserException ex)
-            //{
-            //    //log in db ex.message;
-            //    context.Response.StatusCode = 404;
-            //    await context.Response.WriteAsJsonAsync(
-            //        new
-            //        {
-            //            message = "Invalid email or password..."
-            //        });
-            //}
+            catch (InvalidUserException ex)
+            {
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsJsonAsync(
+                    new
+                    {
+#if DEBUG
+                        message = ex.Message
+#else
+                        message = "Invalid email or password"
+#endif
+                    });
+            }
             catch (NotFoundException ex)
             {
                 context.Response.StatusCode = 404;
@@ -39,6 +43,21 @@ namespace SniffAndStay.API.Middleware
                         message = ex.Message
                     });
             }
+            catch (ValidationException ex)
+            {
+                var modelState = new ModelStateDictionary();
+                foreach (var error in ex.Errors)
+                    modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
+                var problemDetails = new ValidationProblemDetails(modelState)
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Validation failed"
+                };
+
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(problemDetails);
+            }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
@@ -46,7 +65,11 @@ namespace SniffAndStay.API.Middleware
                 await context.Response.WriteAsJsonAsync(
                     new
                     {
+#if DEBUG
                         message = ex.Message
+#else
+                        message = "An unexpected error occurred. Please try again later."
+#endif
                     });
             }
         }

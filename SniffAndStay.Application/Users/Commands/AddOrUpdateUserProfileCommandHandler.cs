@@ -10,7 +10,7 @@ using SniffAndStay.Domain.Entities;
 
 namespace SniffAndStay.Application.Users.Commands
 {
-    public record AddOrUpdateUserProfileCommand(UserProfileRequest UpdateProfileRequest, Stream? File, string? FileName) : IRequest<UserProfileResponse>;
+    public record AddOrUpdateUserProfileCommand(UserProfileRequest UpdateProfileRequest, Stream? File, string? FileName, string? ContentType) : IRequest<UserProfileResponse>;
     public class AddOrUpdateUserProfileCommandHandler : IRequestHandler<AddOrUpdateUserProfileCommand, UserProfileResponse>
     {
         private readonly IApplicationDbContext _applicationDbContext;

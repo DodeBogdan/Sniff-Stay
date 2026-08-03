@@ -9,7 +9,7 @@ using SniffAndStay.Domain.Entities;
 
 namespace SniffAndStay.Application.Pets.Commands
 {
-    public record AddPetCommand(PetRequest PetRequest, Stream? File, string? FileName) : IRequest<PetResponse>;
+    public record AddPetCommand(PetRequest PetRequest, Stream? File, string? FileName, string? ContentType) : IRequest<PetResponse>;
 
     public class AddPetCommandHandler : IRequestHandler<AddPetCommand, PetResponse>
     {
