@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using SniffAndStay.Application.Common.Configurations;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Persistence;
@@ -18,11 +21,33 @@ namespace SniffAndStay.Infrastructure
 {
     public static class DependencyInjection
     {
+        public static void AddNLogConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<ConnectionStringsConfiguration>(configuration.GetSection(ConnectionStringsConfiguration.SectionName));
+            var connectionStringsConfiguration = configuration.GetSection(ConnectionStringsConfiguration.SectionName).Get<ConnectionStringsConfiguration>()!;
+
+            ConfigureNLogDatabaseTargetConnectionString("database", connectionStringsConfiguration.LoggingConnection);
+        }
+        private static void ConfigureNLogDatabaseTargetConnectionString(string targetName, string connectionString)
+        {
+            LoggingConfiguration config = LogManager.Configuration;
+
+            if (config.FindTargetByName(targetName) is DatabaseTarget databaseTarget)
+            {
+                databaseTarget.ConnectionString = connectionString;
+            }
+
+            LogManager.Configuration = config;
+        }
+
         public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<ConnectionStringsConfiguration>(configuration.GetSection(ConnectionStringsConfiguration.SectionName));
+            var connectionStringsConfiguration = configuration.GetSection(ConnectionStringsConfiguration.SectionName).Get<ConnectionStringsConfiguration>()!;
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionStringsConfiguration.DatabaseConnection));
 
             services.AddScoped<IApplicationDbContext>(
                 provider => provider.GetRequiredService<ApplicationDbContext>());

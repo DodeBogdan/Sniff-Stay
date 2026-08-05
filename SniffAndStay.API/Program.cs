@@ -7,15 +7,19 @@ using SniffAndStay.Infrastructure;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddNLogConfiguration(builder.Configuration);
+
 try
 {
-    var builder = WebApplication.CreateBuilder(args);
-
     builder.Services.AddApiServices();
     builder.Services.AddApplicationServices(builder.Configuration);
     builder.Services.AddInfrastructureServices(builder.Configuration);
 
     builder.Logging.ClearProviders();
+    builder.Logging.AddConsole();
+    builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+
     builder.Host.UseNLog();
 
     var app = builder.Build();

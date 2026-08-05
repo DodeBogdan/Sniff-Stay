@@ -19,6 +19,8 @@ namespace SniffAndStay.Application
                 cfg.RegisterServicesFromAssembly(assembly);
 
                 cfg.AddOpenBehavior(
+                    typeof(LoggingBehavior<,>));
+                cfg.AddOpenBehavior(
                     typeof(ValidationBehavior<,>));
             });
 
