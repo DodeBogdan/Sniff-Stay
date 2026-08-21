@@ -3,10 +3,10 @@ using SniffAndStay.Application.Common.Extensions;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
-using SniffAndStay.Application.Profile.Response;
+using SniffAndStay.Application.Users.Response;
 using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Profile.Commands
+namespace SniffAndStay.Application.Users.Commands
 {
     public record DeleteUserProfilePictureCommand(Guid? userId) : IRequest<UserProfileResponse>;
     public class DeleteUserProfilePictureCommandHandler : IRequestHandler<DeleteUserProfilePictureCommand, UserProfileResponse>
@@ -14,20 +14,26 @@ namespace SniffAndStay.Application.Profile.Commands
         private readonly IApplicationDbContext _applicationDbContext;
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
 
         public DeleteUserProfilePictureCommandHandler(
             IApplicationDbContext applicationDbContext,
             ICurrentUserService currentUserService,
-            IFileStorageService fileStorageService)
+            IFileStorageService fileStorageService,
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _applicationDbContext = applicationDbContext;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
+            _filePathService = filePathService;
+            _userService = userService;
         }
 
         public async Task<UserProfileResponse> Handle(DeleteUserProfilePictureCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken);
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.Details, cancellationToken);
 
             if (request.userId.HasValue && user.Id != request.userId && !string.Equals(_currentUserService.Role, "Admin"))
             {
@@ -39,7 +45,8 @@ namespace SniffAndStay.Application.Profile.Commands
                 return UserProfileResponse.FromUserDetails(user);
             }
 
-            string filePathToDelete = Path.Combine(user.Id.ToString(), user.UserDetails.ProfilePicture!);
+            string fileNameToDelete = _filePathService.ResolveFileName(user.Id, user.UserDetails.ProfilePicture!);
+            string filePathToDelete = _filePathService.ResolveFilePath(fileNameToDelete, FileType.ProfilePicture);
             await _fileStorageService.DeleteFileAsync(filePathToDelete, cancellationToken);
 
             user.UserDetails.ProfilePicture = null;

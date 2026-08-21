@@ -41,7 +41,7 @@ namespace SniffAndStay.Application.Authentication.Commands
             string activeToken = _jwtService.GenerateToken(TokenClaims.ToTokenClaim(user));
             string refreshToken = _jwtService.GenerateRefreshToken();
 
-            var refreshTokenEntity = Domain.Entities.RefreshToken.CreateResfreshToken(user.Id, refreshToken, Constants.RefreshTokenExpirationDays);
+            var refreshTokenEntity = RefreshToken.CreateResfreshToken(user.Id, refreshToken, Constants.RefreshTokenExpirationDays);
 
             await _context.RefreshTokens.AddAsync(refreshTokenEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

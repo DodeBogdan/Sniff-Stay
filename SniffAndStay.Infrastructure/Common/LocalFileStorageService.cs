@@ -5,48 +5,46 @@ namespace SniffAndStay.Infrastructure.Common
 {
     public class LocalFileStorageService : IFileStorageService
     {
-        private readonly IFileStorageConfig _fileStorageConfig;
-
-        public LocalFileStorageService(IFileStorageConfig fileStorageConfig)
+        public Task<Stream?> GetFileAsync(string filePath, CancellationToken cancellationToken)
         {
-            _fileStorageConfig = fileStorageConfig;
-        }
-
-        public Task<Stream?> GetFileAsync(string fileName, CancellationToken cancellationToken)
-        {
-            string fullPath = Path.Combine(_fileStorageConfig.GetProfilePicturePath(), fileName);
-
-            if (fullPath.IsNullOrEmpty())
+            if (filePath.IsNullOrEmpty())
             {
-                throw new ArgumentException("File path cannot be null or empty.", nameof(fullPath));
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
             }
 
-            Stream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException(nameof(filePath));
+            }
+
+            Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             return Task.FromResult<Stream?>(fileStream);
         }
 
-        public Task DeleteFileAsync(string fileName, CancellationToken cancellationToken)
+        public Task DeleteFileAsync(string filePath, CancellationToken cancellationToken)
         {
-            string fullPath = Path.Combine(_fileStorageConfig.GetProfilePicturePath(), fileName);
-
-            if (fullPath.IsNullOrEmpty())
+            if (filePath.IsNullOrEmpty())
             {
-                throw new ArgumentException("File path cannot be null or empty.", nameof(fullPath));
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
             }
 
-            if (File.Exists(fullPath))
+            if (File.Exists(filePath))
             {
-                File.Delete(fullPath);
+                File.Delete(filePath);
             }
-            
+
             return Task.CompletedTask;
         }
 
-        public async Task SaveFileAsync(string fileName, Stream fileContent, CancellationToken cancellationToken)
+        public async Task SaveFileAsync(string filePath, Stream fileContent, CancellationToken cancellationToken)
         {
-            string filePath = _fileStorageConfig.GetProfilePicturePath();
+            string filePathOnly = Path.GetDirectoryName(filePath)
+                ?? throw new ArgumentException("Invalid file path.", nameof(filePath));
 
-            if (filePath.IsNullOrEmpty())
+            string fileName = Path.GetFileName(filePath) ??
+                throw new ArgumentException("Invalid file name.", nameof(filePath));
+
+            if (filePathOnly.IsNullOrEmpty())
             {
                 throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
             }
@@ -61,17 +59,13 @@ namespace SniffAndStay.Infrastructure.Common
                 throw new ArgumentException("File content cannot be null or empty.", nameof(fileContent));
             }
 
-            if (!Directory.Exists(filePath))
+            if (!Directory.Exists(filePathOnly))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(filePathOnly);
             }
 
-            var fullFilePath = Path.Combine(filePath, fileName);
-
-            using var fileStream = new FileStream(fullFilePath, FileMode.Create);
+            using var fileStream = new FileStream(filePath, FileMode.Create);
             await fileContent.CopyToAsync(fileStream, cancellationToken);
         }
-
-
     }
 }

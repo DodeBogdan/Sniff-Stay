@@ -21,7 +21,7 @@ namespace SniffAndStay.Infrastructure.Persistence.Configurations
             builder.Property(p => p.Picture)
                 .HasMaxLength(256);
 
-            builder.Property(p => p.Type)
+            builder.Property(p => p.PetType)
                 .HasDefaultValue(PetType.Unknown);
 
             builder.HasOne(p => p.User)

@@ -5,7 +5,7 @@ using SniffAndStay.Domain.Entities;
 
 namespace SniffAndStay.Application.Authentication.Commands
 {
-    public record DeleteUserCommand(string? Email) : IRequest;
+    public record DeleteUserCommand(string? Email, bool ShouldDeleteAllUsers = false) : IRequest;
 
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     {
@@ -21,11 +21,11 @@ namespace SniffAndStay.Application.Authentication.Commands
         {
             User? user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
-            if (user == null)
+            if (request.ShouldDeleteAllUsers)
             {
                 await _context.Users.ExecuteDeleteAsync(cancellationToken);
             }
-            else
+            else if (user != null)
             {
                 _context.Users.Remove(user);
             }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.OpenApi;
+using SniffAndStay.API.SchemaFilter;
+using System.Reflection;
 
 namespace SniffAndStay.API
 {
@@ -11,6 +13,11 @@ namespace SniffAndStay.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+                options.SchemaFilter<EnumSchemaFilter>();
+
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Sniff & Stay API",

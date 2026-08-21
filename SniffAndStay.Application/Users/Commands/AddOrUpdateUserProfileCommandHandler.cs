@@ -4,32 +4,38 @@ using SniffAndStay.Application.Exceptions;
 using SniffAndStay.Application.Interfaces.Common;
 using SniffAndStay.Application.Interfaces.Persistence;
 using SniffAndStay.Application.Interfaces.Security;
-using SniffAndStay.Application.Profile.DTOs;
-using SniffAndStay.Application.Profile.Response;
+using SniffAndStay.Application.Users.DTOs;
+using SniffAndStay.Application.Users.Response;
 using SniffAndStay.Domain.Entities;
 
-namespace SniffAndStay.Application.Profile.Commands
+namespace SniffAndStay.Application.Users.Commands
 {
-    public record UpdateUserProfileCommand(UserProfileRequest UpdateProfileRequest, Stream? File, string? FileName) : IRequest<UserProfileResponse>;
-    public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, UserProfileResponse>
+    public record AddOrUpdateUserProfileCommand(UserProfileRequest UpdateProfileRequest, Stream? File, string? FileName, string? ContentType) : IRequest<UserProfileResponse>;
+    public class AddOrUpdateUserProfileCommandHandler : IRequestHandler<AddOrUpdateUserProfileCommand, UserProfileResponse>
     {
         private readonly IApplicationDbContext _applicationDbContext;
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IFilePathService _filePathService;
+        private readonly IUserService _userService;
 
-        public UpdateUserProfileCommandHandler(
+        public AddOrUpdateUserProfileCommandHandler(
             IApplicationDbContext applicationDbContext,
             ICurrentUserService currentUserService,
-            IFileStorageService fileStorageService)
+            IFileStorageService fileStorageService,
+            IFilePathService filePathService,
+            IUserService userService)
         {
             _applicationDbContext = applicationDbContext;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
+            _filePathService = filePathService;
+            _userService = userService;
         }
 
-        public async Task<UserProfileResponse> Handle(UpdateUserProfileCommand request, CancellationToken cancellationToken)
+        public async Task<UserProfileResponse> Handle(AddOrUpdateUserProfileCommand request, CancellationToken cancellationToken)
         {
-            User user = await _currentUserService.GetUserWithDetailsAsync(cancellationToken)
+            User user = await _userService.GetUserAsync(_currentUserService.UserId, IncludeType.Details, cancellationToken)
                 ?? throw new NotFoundException("User not found.");
 
             user.UserDetails ??= new UserDetails();
@@ -56,12 +62,14 @@ namespace SniffAndStay.Application.Profile.Commands
 
             if (request.File != null && !request.FileName.IsNullOrEmpty() && !string.Equals(user.UserDetails.ProfilePicture, request.FileName))
             {
-                string filePathToSave = Path.Combine(user.Id.ToString(), request.FileName!);
+                string fileNameToSave = _filePathService.ResolveFileName(user.Id, request.FileName!);
+                string filePathToSave = _filePathService.ResolveFilePath(fileNameToSave, FileType.ProfilePicture);
                 await _fileStorageService.SaveFileAsync(filePathToSave, request.File, cancellationToken);
                 
                 if (!user.UserDetails.ProfilePicture.IsNullOrEmpty())
                 {
-                    string filePathToDelete = Path.Combine(user.Id.ToString(), user.UserDetails.ProfilePicture!);
+                    string fileNameToDelete = _filePathService.ResolveFileName(user.Id, user.UserDetails.ProfilePicture!);
+                    string filePathToDelete = _filePathService.ResolveFilePath(fileNameToDelete, FileType.ProfilePicture);
                     await _fileStorageService.DeleteFileAsync(filePathToDelete, cancellationToken);
                 }
 

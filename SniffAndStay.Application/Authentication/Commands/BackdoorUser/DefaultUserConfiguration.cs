@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SniffAndStay.Application.Authentication.Commands.TODELETE
+﻿namespace SniffAndStay.Application.Authentication.Commands.BackdoorUser
 {
     public class DefaultUserConfiguration
     {

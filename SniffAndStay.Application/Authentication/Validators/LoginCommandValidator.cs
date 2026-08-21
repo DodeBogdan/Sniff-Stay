@@ -9,10 +9,13 @@ namespace SniffAndStay.Application.Authentication.Validators
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .EmailAddress();
+                .WithMessage("Email is required.")
+                .EmailAddress()
+                .WithMessage("Invalid email format.");
 
             RuleFor(x => x.Password)
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Password is required.");
         }
     }
 }

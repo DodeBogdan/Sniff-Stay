@@ -1,24 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>SniffAndStay.API</RootNamespace>
-    <UserSecretsId>0c7e3b78-3ae3-4436-8258-5ef17107867c</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>SniffAndStay.API</RootNamespace>
+		<UserSecretsId>0c7e3b78-3ae3-4436-8258-5ef17107867c</UserSecretsId>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
-  </ItemGroup>
+	<ItemGroup>
+	  <None Include="NLog.config">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SniffAndStay.Application\SniffAndStay.Application.csproj" />
-    <ProjectReference Include="..\SniffAndStay.Infrastructure\SniffAndStay.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="NLog.Database" Version="6.0.3" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="6.1.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\SniffAndStay.Application\SniffAndStay.Application.csproj" />
+		<ProjectReference Include="..\SniffAndStay.Infrastructure\SniffAndStay.Infrastructure.csproj" />
+	</ItemGroup>
+
+	
 </Project>
