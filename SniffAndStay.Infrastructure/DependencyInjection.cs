@@ -26,7 +26,8 @@ namespace SniffAndStay.Infrastructure
             services.Configure<ConnectionStringsConfiguration>(configuration.GetSection(ConnectionStringsConfiguration.SectionName));
             var connectionStringsConfiguration = configuration.GetSection(ConnectionStringsConfiguration.SectionName).Get<ConnectionStringsConfiguration>()!;
 
-            ConfigureNLogDatabaseTargetConnectionString("database", connectionStringsConfiguration.LoggingConnection);
+            ConfigureNLogDatabaseTargetConnectionString("errorDatabase", connectionStringsConfiguration.LoggingConnection);
+            ConfigureNLogDatabaseTargetConnectionString("requestDatabase", connectionStringsConfiguration.LoggingConnection);
         }
         private static void ConfigureNLogDatabaseTargetConnectionString(string targetName, string connectionString)
         {

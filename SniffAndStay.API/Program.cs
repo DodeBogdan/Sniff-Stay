@@ -36,6 +36,7 @@ try
     }
 
     app.UseMiddleware<ExceptionMiddleware>();
+    app.UseMiddleware<RequestLoggingMiddleware>();
     app.UseCors("AllowAngularApp");
     app.UseHttpsRedirection();
 
