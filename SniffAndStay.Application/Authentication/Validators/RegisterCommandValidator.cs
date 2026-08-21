@@ -5,6 +5,11 @@ namespace SniffAndStay.Application.Authentication.Validators
 {
     public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {
+        private const int EmailMaxLength = 255;
+        private const int PasswordMaxLength = 100;
+        private const int PasswordMinLength = 8;
+
+
         public RegisterCommandValidator()
         {
             RuleFor(x => x.Email)
@@ -12,15 +17,15 @@ namespace SniffAndStay.Application.Authentication.Validators
                 .WithMessage("Email is required.")
                 .EmailAddress()
                 .WithMessage("Invalid email format.")
-                .MaximumLength(255)
+                .MaximumLength(EmailMaxLength)
                 .WithMessage("Email must not exceed 255 characters.");
 
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .WithMessage("Password is required.")
-                .MinimumLength(8)
+                .MinimumLength(PasswordMinLength)
                 .WithMessage("Password must be at least 8 characters long.")
-                .MaximumLength(100)
+                .MaximumLength(PasswordMaxLength)
                 .WithMessage("Password must not exceed 100 characters.")
                 .Matches("[A-Z]")
                 .WithMessage("Password must contain at least one uppercase letter.")
