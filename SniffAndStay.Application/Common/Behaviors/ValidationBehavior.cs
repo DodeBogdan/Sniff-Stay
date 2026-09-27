@@ -24,7 +24,7 @@ namespace SniffAndStay.Application.Common.Behaviors
             CancellationToken cancellationToken)
         {
             if (!_validators.Any())
-                return await next();
+                return await next(cancellationToken);
 
             var context = new ValidationContext<TRequest>(request);
 
@@ -42,7 +42,7 @@ namespace SniffAndStay.Application.Common.Behaviors
                 throw new ValidationException(errors);
             }
 
-            return await next();
+            return await next(cancellationToken);
         }
     }
 }

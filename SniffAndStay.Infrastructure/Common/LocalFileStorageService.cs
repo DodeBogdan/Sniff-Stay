@@ -39,24 +39,24 @@ namespace SniffAndStay.Infrastructure.Common
         public async Task SaveFileAsync(string filePath, Stream fileContent, CancellationToken cancellationToken)
         {
             string filePathOnly = Path.GetDirectoryName(filePath)
-                ?? throw new ArgumentException("Invalid file path.", nameof(filePath));
+                ?? throw new ArgumentException("Invalid file path.");
 
             string fileName = Path.GetFileName(filePath) ??
-                throw new ArgumentException("Invalid file name.", nameof(filePath));
+                throw new ArgumentException("Invalid file name.");
 
             if (filePathOnly.IsNullOrEmpty())
             {
-                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+                throw new ArgumentException("File path cannot be null or empty.");
             }
 
             if (fileName.IsNullOrEmpty())
             {
-                throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+                throw new ArgumentException("File name cannot be null or empty.");
             }
 
             if (fileContent == null || fileContent.Length == 0)
             {
-                throw new ArgumentException("File content cannot be null or empty.", nameof(fileContent));
+                throw new ArgumentException("File content cannot be null or empty.");
             }
 
             if (!Directory.Exists(filePathOnly))

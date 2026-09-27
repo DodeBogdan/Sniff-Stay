@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SniffAndStay.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SniffAndStay.Infrastructure.Persistence.Configurations
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SniffAndStay.Application.Common.Extensions
+﻿namespace SniffAndStay.Application.Common.Extensions
 {
     public static class GuidExtensions
     {

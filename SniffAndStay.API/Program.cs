@@ -45,12 +45,11 @@ try
 
     app.MapControllers();
 
-    app.Run();
+    await app.RunAsync();
 
 }catch (Exception ex)
 {
-    logger.Error(ex, "Application stopped because of an exception", ex);
-    throw;
+    logger.Error(ex, "Application stopped because of an exception");
 }
 finally
 {

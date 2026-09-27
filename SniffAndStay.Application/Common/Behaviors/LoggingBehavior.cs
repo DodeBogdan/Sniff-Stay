@@ -20,7 +20,7 @@ namespace SniffAndStay.Application.Common.Behaviors
         {
             try
             {
-                return await next();
+                return await next(cancellationToken);
             }
             catch (Exception ex)
             {

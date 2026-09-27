@@ -31,7 +31,7 @@ namespace SniffAndStay.API.Middleware
 #else
                         message = "Invalid email or password"
 #endif
-                    });
+                    }, context.RequestAborted);
 
             }
             catch (NotFoundException ex)
@@ -41,7 +41,7 @@ namespace SniffAndStay.API.Middleware
                     new
                     {
                         message = ex.Message
-                    });
+                    }, context.RequestAborted);
             }
             catch (ValidationException ex)
             {
@@ -56,7 +56,7 @@ namespace SniffAndStay.API.Middleware
                 };
 
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsJsonAsync(problemDetails);
+                await context.Response.WriteAsJsonAsync(problemDetails, context.RequestAborted);
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace SniffAndStay.API.Middleware
 #else
                         message = "An unexpected error occurred. Please try again later."
 #endif
-                    });
+                    }, context.RequestAborted);
             }
         }
     }

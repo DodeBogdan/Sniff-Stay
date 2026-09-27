@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SniffAndStay.Infrastructure.Configuration
+﻿namespace SniffAndStay.Infrastructure.Configuration
 {
     internal class ConnectionStringsConfiguration
     {

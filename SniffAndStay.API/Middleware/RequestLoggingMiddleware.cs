@@ -6,7 +6,7 @@ namespace SniffAndStay.API.Middleware
     public class RequestLoggingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _requestLogger;
+        private readonly ILogger _logger;
         private readonly bool _isRequestLoggingEnabled;
 
         public RequestLoggingMiddleware(RequestDelegate next,
@@ -14,7 +14,7 @@ namespace SniffAndStay.API.Middleware
             IConfiguration configuration)
         {
             _next = next;
-            _requestLogger = loggerFactory.CreateLogger("RequestLogging");
+            _logger = loggerFactory.CreateLogger("RequestLogging");
             _isRequestLoggingEnabled = configuration.GetValue<bool>("RequestLoggingEnabled");
         }
 
@@ -31,7 +31,7 @@ namespace SniffAndStay.API.Middleware
 
             stopwatch.Stop();
 
-            _requestLogger.LogInformation(
+            _logger.LogInformation(
                 "{Method} {Path} responded {StatusCode} in {DurationMs}ms, User={UserId}, IP={IpAddress}, Agent={UserAgent}",
                 context.Request.Method,
                 context.Request.Path,
