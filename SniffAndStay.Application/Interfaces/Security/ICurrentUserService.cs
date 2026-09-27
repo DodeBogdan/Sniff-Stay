@@ -1,6 +1,4 @@
-﻿using SniffAndStay.Domain.Entities;
-
-namespace SniffAndStay.Application.Interfaces.Security
+﻿namespace SniffAndStay.Application.Interfaces.Security
 {
 
     public interface ICurrentUserService

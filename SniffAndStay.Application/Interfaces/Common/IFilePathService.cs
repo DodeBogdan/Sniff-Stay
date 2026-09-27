@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SniffAndStay.Application.Interfaces.Common
+﻿namespace SniffAndStay.Application.Interfaces.Common
 {
     public interface IFilePathService
     {

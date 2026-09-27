@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using SniffAndStay.Application.Common.Validators;
 using SniffAndStay.Application.Pets.Commands;
-using SniffAndStay.Domain.Constants;
 
 namespace SniffAndStay.Application.Pets.Validators
 {

@@ -18,7 +18,7 @@ namespace SniffAndStay.Infrastructure.Common
             _applicationDbContext = applicationDbContext;
         }
 
-        public async Task<User> GetUserAsync(Guid? userId, IncludeType includeType = IncludeType.None, CancellationToken cancellationToken = default)
+        public async Task<User> GetUserAsync(Guid? userId, IncludeType includeType, CancellationToken cancellationToken = default)
         {
             if(userId.IsNullOrEmpty())
             {

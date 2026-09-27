@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SniffAndStay.Application.Authentication.Commands;
 using SniffAndStay.Application.Pets.Commands;
 using SniffAndStay.Application.Pets.DTOs;
 using SniffAndStay.Application.Pets.Queries;
@@ -68,29 +67,12 @@ namespace SniffAndStay.API.Controllers
             return Ok(response);
         }
 
-        //[HttpPatch("update-pet/{petName}")]
-        //[Authorize]
-        //[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> UpdatePet(IFormFile? file, [FromQuery] UserProfileRequest request, CancellationToken cancellationToken)
-        //{
-        //    Stream? fileStream = file?.OpenReadStream();
 
-        //    var response = await _mediator.Send(new UpdateUserProfileCommand(request, fileStream, file?.FileName), cancellationToken);
-        //    return Ok(response);
-        //}
-
-        //[HttpDelete("delete-pet-picture/{petName}")]
-        //[Authorize]
-        //public async Task<IActionResult> DeleteUserPetPicture(string petName, CancellationToken cancellationToken)
-        //{
-        //    var response = await _mediator.Send(new DeleteUserProfilePictureCommand(null), cancellationToken);
-        //    return Ok(response);
-        //}
-
-        //[HttpDelete("delete-pet/{petName}")]
-        //public async Task DeletePet(string petName, CancellationToken cancellationToken)
-        //{
-        //    await _mediator.Send(new DeleteUserCommand(null), cancellationToken);
-        //}
+        [HttpDelete("remove-pet")]
+        public async Task<IActionResult> RemovePet(Guid petId, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(new RemovePetCommand(petId), cancellationToken);
+            return Ok("Pet removed successfully.");
+        }
     }
 }
